@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="options" default="pear-package" basedir=".">
+
+    <property name="buildDirectory" value="./build" />
+    <property name="sourceDirectory" value="./src" />
+    <property name="bitrix.moduleVersion" value="0.1.0" />
+
+    <!-- Current time... -->
+    <tstamp>
+        <format property="bitrix.moduleVersionDate" pattern="%F %T" />
+    </tstamp>
+
+    <property name="package.summary" value="Bitrix options module" />
+
+    <target name="run-tests">
+
+    </target>
+
+    <target name="prepare-build-directory">
+        <delete
+            dir="${buildDirectory}"
+            includeemptydirs="true"
+            verbose="false"
+            failonerror="true" />
+    </target>
+
+    <target name="prepare-files" depends="prepare-build-directory">
+        <copy todir="${buildDirectory}">
+            <filterchain>
+                <expandproperties />
+            </filterchain>
+
+            <fileset dir="${sourceDirectory}">
+                <include name="**" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="pear-package" depends="prepare-files">
+        <pearpkg2 name="${phing.project.name}" dir="${buildDirectory}">
+            <option name="outputdirectory" value="${buildDirectory}" />
+            <option name="packagefile" value="package.xml" />
+            <option name="packagedirectory" value="${buildDirectory}" />
+            <option name="baseinstalldir" value="capall" />
+            <option name="channel" value="capall.shockov.com" />
+            <option name="summary" value="${package.summary}" />
+            <option name="description" value="${package.summary}." />
+            <option name="apiversion" value="${bitrix.moduleVersion}" />
+            <option name="apistability" value="stable" />
+            <option name="releaseversion" value="${bitrix.moduleVersion}" />
+            <option name="releasestability" value="beta" />
+            <option name="license" value="LGPL" />
+            <option name="phpdep" value="5.0.0" />
+            <option name="pearinstallerdep" value="1.4.6" />
+            <option name="packagetype" value="php" />
+            <option name="notes" value="Initial build." />
+            <mapping name="maintainers">
+                <element>
+                    <element key="handle" value="alexeyshockov" />
+                    <element key="name" value="Alexey Shockov" />
+                    <element key="email" value="alexey@shockov.com" />
+                    <element key="role" value="lead" />
+                </element>
+            </mapping>
+            <fileset dir="${buildDirectory}">
+                <include name="**" />
+            </fileset>
+        </pearpkg2>
+
+        <tar destfile="${buildDirectory}/${phing.project.name}-${bitrix.moduleVersion}.tgz" compression="gzip">
+            <fileset dir="${buildDirectory}">
+                <include name="**/**" />
+            </fileset>
+        </tar>
+    </target>
+
+</project>
